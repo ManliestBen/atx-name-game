@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>The Name Game!</title>
+  <style>
+    body {
+      font-family: Helvetica;
+      font-weight: lighter;
+      font-size: 20px;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #container {
+      text-align: center;
+    }
+    ul li:first-child {
+      font-size: 50px;
+      color: green;
+      margin-bottom: 15px;
+    }
+    li {
+      list-style: none;
+      animation: twirl 1s;
+    }
+    @keyframes twirl {
+      0% {
+        transform-origin: center;
+        transform: rotate3d(0,0,1,-200deg);
+        opacity: 0;
+      }
+      100% {
+        transform-origin: center;
+        transform: none;
+        opacity: 1;
+      }
+    }
+    button {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 20px;
+      padding: 20px;
+    }
+    select {
+      margin-top: 5px;
+      margin-left: 5px;
+      font-size: 20px;
+    }
+    label {
+      position: fixed;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      font-weight: 400;
+    }
+    #row {
+        font-size: 50px;
+    }
+    #rowtitle {
+        font-size: 50px;
+    }
+  </style>
+</head>
+<div id='rowtitle'>
+Row #
+</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<div id='row'>
+
+<br>
+</div>
+<body>
+  <button id="pick">Next ATX<br>Student</button>
+  <label>Campus <select></select></label>
+  <div id="container">
+    <ul id="picked"></ul>
+  </div>
+
+  <script type="text/javascript">
+    const re = /\((.+)\)/;
+    const students = [
+      'Alan (ATX)',
+      'Alanna (ATX)',
+      'Alex (ATX)',
+      'Brandon (ATX)',
+      'Crystal (ATX)',
+      'Daniel (ATX)',
+      'David (ATX)',
+      'Elix (ATX)',
+      'Jan (ATX)',
+      'Jose (ATX)',
+      'Lincoln (ATX)',
+      'Mariana (ATX)',
+      'Melony (ATX)',
+      'Michael (ATX)',
+      'Skylar (ATX)',
+      'Sumar (ATX)',
+      'Tan (ATX)',
+      'Vinnie (ATX)',
+      'Adam (DAL)',
+      'Briana (DAL)',
+      'David (DAL)',
+      'Eric (DAL)',
+      'Fabrizio (DAL)',
+      'Gabriel (DAL)',
+      'Jason (DAL)',
+      'John-Michael (DAL)',
+      'Matthew (DAL)',
+      'Rashad (DAL)',
+      'Alex (DEN)',
+      'Anderson (DEN)',
+      'Andrew (DEN)',
+      'Ashly (DEN)',
+      'Bahram (DEN)',
+      'Brian (DEN)',
+      'Cody (DEN)',
+      'Dagny (DEN)',
+      'Jacob (DEN)',
+      'Janson (DEN)',
+      'Jason (DEN)',
+      'Jeremy (DEN)',
+      'Megan (DEN)',
+      'Robert J. (DEN)',
+      'Robert P. (DEN)',
+      'Ryan (DEN)',
+      'Sahar (DEN)',
+      'Alejandra (LA)',
+      'Amir (LA)',
+      'Brennan (LA)',
+      'Carl (LA)',
+      'Caroline (LA)',
+      'Cedric (LA)',
+      'Daniel (LA)',
+      'Francis (LA)',
+      'Hunter (LA)',
+      'Jose (LA)',
+      'Martin (LA)',
+      'Milad (LA)',
+      'Ruben (LA)',
+      'Sarah (LA)',
+      'Stephanie (LA)',
+      'Will (LA)',
+      'Alex (SD)',
+      'Jonathan (SD)',
+      'Rocky (SD)',
+      'Ryan (SD)',
+      'Trey (SD)',
+    ];
+    let first, filteredStudents;
+    const pickedList = document.getElementById('picked');
+    const selectEl = document.querySelector('select');
+    var row = Math.round(Math.random() * 5);
+    document.getElementById('pick').addEventListener('click', function () {
+      if (filteredStudents.length) {
+        let contestant = filteredStudents.splice(Math.floor(Math.random() * filteredStudents.length), 1);
+        let li = document.createElement('li');
+        row = Math.floor(Math.random() * 5) + 1;
+        document.getElementById('row').innerHTML = row;
+        li.innerHTML = contestant;
+        if (first) {
+          pickedList.firstElementChild.remove();
+          pickedList.appendChild(li);
+          first = false;
+        } else {
+          pickedList.insertBefore(li, pickedList.firstElementChild);
+        }
+      } else {
+        refreshStudents();
+      }
+    });
+    selectEl.addEventListener('change', refreshStudents);
+    function refreshStudents() {
+      let campus = selectEl.value;
+      filteredStudents =  campus === 'ALL' ?
+        students.slice() : students.filter(s => s.includes(`(${campus})`));
+      pickedList.innerHTML = "<li>Who's First?</li>";
+      first = true;
+    }
+    function init() {
+      let campuses = Object.keys(students.reduce(function (obj, s) {
+        obj[re.exec(s)[1]] = true;
+        return obj;
+      }, {}));
+      selectEl.innerHTML = '<option value="ALL">-ALL-</option>';
+      campuses.forEach(function (c) {
+        selectEl.innerHTML += `<option value="${c}">${c}</option>`;
+      });
+      refreshStudents();
+    }
+    init();
+  </script>
+</body> 
+
+
+</html>
